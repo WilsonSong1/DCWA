@@ -45,11 +45,6 @@ app.get('/students', async(req, res) => {
   res.render('students', {students});
   });
   
-  //Route for Grades Page
-  app.get('/grades', (req, res) => {
-    res.render('grades');
-  });
-  
   //Route for Lecturers Page
   app.get("/lecturers", async(req, res) => {
         res.render("lecturers");
@@ -135,6 +130,46 @@ app.post('/students/add', async (req, res) => {
   res.redirect('/students');
 });
 
+app.get('/grades', async (req, res) => {
+  const gradeInfo = await pool.query(`
+    SELECT s.name AS studentName, 
+    m.name AS moduleName, 
+    g.grade AS grade
+    FROM student s
+    LEFT JOIN 
+    grade g ON s.sid = g.sid
+    LEFT JOIN 
+    module m ON g.mid = m.mid
+    ORDER BY 
+    s.name ASC, 
+    g.grade ASC;
+    `);
+
+    //Using a map to store student grades
+    const studentGradesMap = new Map();
+
+    gradeInfo.forEach(({ studentName, moduleName, grade }) => {
+      //Checking if the student has already been placed in the map
+      if (!studentGradesMap.has(studentName)) {
+        //Initializing a new entry for the student
+        studentGradesMap.set(studentName, []);
+      }
+
+      //Adding module and grade to an array
+      studentGradesMap.get(studentName).push({
+        //If module is missing it is left blank
+        moduleName: moduleName || ' ',
+        //If grade is missing it is left blank
+        grade: grade || ' '
+       });
+    });
+
+      //Converting the map to an object to display
+      const studentGrades = Object.fromEntries(studentGradesMap);
+
+      //Displaying grades
+      res.render('grades', { studentGrades });
+});
 
   //Start the server
   app.listen(port, () => {

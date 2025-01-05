@@ -1,0 +1,31 @@
+<head>
+    <h1>Student Grades</h1>
+    <a href="/">Home</a>
+</head>
+<body>
+  <table border = "1">
+    <thead>
+      <tr>
+        <th>Student Name</th>
+        <th>Module Name</th>
+        <th>Grade</th>
+      </tr>
+    </thead>
+    <tbody>
+        <!-- Displaying all entries -->
+      <% for (let studentName in studentGrades) { %>
+        <% if (studentGrades[studentName].length > 0) { %>
+          <% studentGrades[studentName].forEach(grade => { %>
+            <tr>
+              <td><%= studentName %></td>
+              <td><%= grade.moduleName %></td>
+              <td><%= grade.grade %></td>
+            </tr>
+          <% }); %>
+        <% } %>
+      <% } %>
+    </tbody>
+  </table>
+
+</body>
+</html>
