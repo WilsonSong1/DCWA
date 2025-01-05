@@ -70,11 +70,11 @@ app.post('/students/edit/:sid', async(req, res) =>{
   const errorMessage =[];
 
   //Checking if the name has at least 2 characters
-  if(name == null || name.length <= 2){
+  if(name == undefined || name.length <= 2){
     errorMessage.push('Student name should be at least 2 or more characters');
   }
   //Checking if age is at least 18
-  if(age == null || age <= 18){
+  if(age == undefined || age <= 18){
     errorMessage.push('Student age must be at least 18');
   }
 
@@ -91,6 +91,51 @@ app.post('/students/edit/:sid', async(req, res) =>{
 
   res.redirect('/students');
 });
+
+app.get('/students/add', (req, res) => {
+  res.render('addStudent', { errorMessage: [], studentInfo: {} });
+});
+
+app.post('/students/add', async (req, res) => {
+  const { sid, name, age } = req.body;
+  const errorMessage = [];
+  const studentInfo = { sid, name, age };
+  
+  //Checking if ID has at least 4 characters
+  if (sid == undefined || sid.length !== 4) {
+    errorMessage.push("Student ID should have at least 4 characters");
+  }
+  //Checking if name has at least 2 characters
+  if (name == undefined || name.length < 2) {
+    errorMessage.push("Student Name should have at least 2 characters");
+  }
+  //Checking if age is at least 18
+  if (age == undefined || age < 18) {
+    errorMessage.push("Age should be at least 18");
+  }
+
+  //If errorMessage is more than 0 an error message is displayed
+  if (errorMessage.length > 0) {
+    return res.render('addStudent', { errorMessage, studentInfo });
+  }
+
+  //check is given the ID the user has chose if it exists in the database
+  const check = await pool.query('SELECT * FROM student WHERE sid = ?', [sid]);
+
+  //If check is assigned an ID, ID is already taken, error message is displayed
+  if (check.length > 0) {
+    errorMessage.push("Student ID already exists please try another ID");
+    return res.render('addStudent', { errorMessage, studentInfo });
+  }
+
+  //Adding the new student information into the database
+  await pool.query('INSERT INTO student (sid, name, age) VALUES (?, ?, ?)', [sid, name, age]);
+
+  //Redirect back to students
+  res.redirect('/students');
+});
+
+
   //Start the server
   app.listen(port, () => {
     console.log(`Web app running on http://localhost:${port}`);

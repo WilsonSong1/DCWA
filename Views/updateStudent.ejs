@@ -2,6 +2,7 @@
     <a href="/">Home</a><br>
     <h1>Update Student</h1>
 </head>
+    <!-- message displayed if there is an error -->
     <% if(errorMessage && errorMessage.length > 0) { %>
         <ul>
             <% errorMessage.forEach(function(error) { %>
@@ -10,6 +11,7 @@
         </ul>
     <% } %>
 <body>
+    <!-- Form to update student information-->
       <form action="/students/edit/<%= students.sid %>" method="post">
         <label for="sid">Student ID</label>
         <input type="text" id="sid" name="sid" value="<%= students.sid %>" readonly><br>
