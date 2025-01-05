@@ -1,0 +1,27 @@
+<head>
+    <a href="/">Home</a><br>
+    <h1>Update Student</h1>
+</head>
+    <% if(errorMessage && errorMessage.length > 0) { %>
+        <ul>
+            <% errorMessage.forEach(function(error) { %>
+                <li><%= errorMessage %></li>
+            <% }); %>
+        </ul>
+    <% } %>
+<body>
+      <form action="/students/edit/<%= students.sid %>" method="post">
+        <label for="sid">Student ID</label>
+        <input type="text" id="sid" name="sid" value="<%= students.sid %>" readonly><br>
+
+        <label for="name">Name</label>
+        <input type="text" id = "name" name="name" value = <%= students.name %>
+        <br><br>
+        
+        <label for="name">Age</label>
+        <input type="text" id = "age" name="age" value = <%= students.age %>
+        <br><br>
+
+        <button type="submit">Add</button>
+      </form>
+</body>
