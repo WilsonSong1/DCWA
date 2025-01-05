@@ -45,9 +45,19 @@ app.get('/students', async(req, res) => {
   res.render('students', {students});
   });
   
+  const lecturerSchema = new mongoose.Schema({
+    _id: String,
+    name: String,
+    did: String
+});
+
+const Lecturer = mongoose.model('Lecturer', lecturerSchema);
+
   //Route for Lecturers Page
   app.get("/lecturers", async(req, res) => {
-        res.render("lecturers");
+    //List of lecturers sorted in ascending order
+    const lecturers = await Lecturer.find({}).sort({_id: 1});
+    res.render('lecturers', {lecturers});
 });
 
 app.get('/students/edit/:sid', async(req, res) =>{
